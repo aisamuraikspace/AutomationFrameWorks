@@ -1,5 +1,12 @@
 from selenium import webdriver
 import pytest
+import time
+import unittest
+import HtmlTestRunner
+from Framework_1.utils import utils as utils
+from Framework_1.pages.loginPage import LoginPage
+from Framework_1.pages.homePage import HomePage
+
 
 class TestLogin():
 
@@ -16,15 +23,19 @@ class TestLogin():
 
 
     def test_login(self, test_setup):
-        driver.get("https://opensource-demo.orangehrmlive.com/")
-        driver.find_element_by_id("txtUsername").send_keys("Admin")
-        driver.find_element_by_id("txtPassword").send_keys("admin123")
-        driver.find_element_by_id("btnLogin").click()
+        driver.get(utils.URL)
+
+        login = LoginPage(driver)
+        login.enter_username(utils.USERNAME)
+        login.enter_password(utils.PASSWORD)
+        login.click_login()
         x = driver.title
         assert x=="OrangeHRM"
 
     def test_logout(self, test_setup):
-        driver.find_element_by_id("welcome").click()
-        driver.find_element_by_link_text("Logout").click()
+
+        homepage = HomePage(driver)
+        homepage.click_welcome()
+        homepage.click_logout()
         print("test completed")
 

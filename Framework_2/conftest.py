@@ -1,11 +1,15 @@
 import pytest
 
+@pytest.fixture(scope="class")
+def test_setup(request):
+    from selenium import webdriver
+    driver = webdriver.Firefox(executable_path="C:/Users/mlively/PycharmProjects/AutomationFrameWorks/Framework_2/drivers/geckodriver.exe")
+
 @pytest.yield_fixture()
 def setUp():
     print("method level setUP")
     yield
     print("method level tearDown")
-
 
 @pytest.yield_fixture(scope="module")
 def oneTimeSetUp(browser, osType):

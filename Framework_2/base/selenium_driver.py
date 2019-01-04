@@ -3,13 +3,17 @@ from traceback import print_stack
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
+import Framework_2.utilities.custom_logger as cl
+import logging
 
 class SeleniumDriver():
+
+    log = cl.customLogger(logging.DEBUG)
 
     def __init__(self, driver):
         self.driver = driver
 
-    def getByType9(self, locatorType):
+    def getByType(self, locatorType):
         locatorType = locatorType.lower()
         if locatorType == "id":
             return By.ID
@@ -24,7 +28,7 @@ class SeleniumDriver():
         elif locatorType == "link":
             return By.LINK_TEXT
         else:
-            print("Locator type " + locatorType + " not correct/supported")
+            self.log.info("Locator type " + locatorType + " not correct/supported")
         return False
 
     def getElement(self, locator, locatorType = "id"):
@@ -33,55 +37,55 @@ class SeleniumDriver():
             locatorType = locatorType.lower()
             byType = self.getByType(locatorType)
             element = self.driver.find_element(byType, locator)
-            print("Element Found")
+            self.log.info("Element Found " + locator + " plus locator type " + locatorType)
         except:
-            print("Element not Found")
+            self.log.info("Element not Found")
             return element
 
     def elementClick(self, locator, locatorType="id"):
         try:
             element = self.getElement(locator, locatorType)
             element.click()
-            print("Click on element " + locator + " type "+locatorType)
+            self.log.info("Click on element " + locator + " type "+locatorType)
         except:
-            print("Can not click on element " + locator + " type " + locatorType)
+            self.log.info("Can not click on element " + locator + " type " + locatorType)
             print_stack()
 
     def sendKeys(self, data, locator, locatorType="id"):
         try:
             element = self.getElement(locator, locatorType)
             element.send_keys(data)
-            print("Send Data on element " + locator + " type "+locatorType)
+            self.log.info("Send Data on element " + locator + " type "+locatorType)
         except:
-            print("Can not Send Data on element " + locator + " type " + locatorType)
+            self.log.info("Can not Send Data on element " + locator + " type " + locatorType)
             print_stack()
 
     def isElementPresent(self, locator, locatorType="id"):
         try:
             element = self.getElement(locator, locatorType)
             if element is not None:
-                print("Element Found")
+                self.log.info("Element Found")
                 return True
             else:
-                print("Element not found")
+                self.log.info("Element not found")
                 return False
         except:
-            print("Element not found")
+            self.log.info("Element not found")
             return False
 
     def waitForElement(self, locator, locatorType="id", timeout=10, pollFrequency=0.5):
         element = None
         try:
             byType = self.getByType(locatorType)
-            print("Waiting for maximum:: " + str(timeout)+ " :: seconds for element to be clickable")
+            self.log.info("Waiting for maximum:: " + str(timeout)+ " :: seconds for element to be clickable")
 
             wait = WebDriverWait(self.driver, 10, poll_frequency=1, ignored_exceptions=[NoSuchElementException,
                                                                                         ElementNotVisibleException,
                                                                                         ElementNotSelectableException])
             element = wait.until(EC.element_to_be_clickable((byType, "stop filter stops")))
-            print("Element on web page")
+            self.log.info("Element on web page")
         except:
-            print("Element not on web page")
+            self.log.info("Element not on web page")
             print_stack()
         return element
 

@@ -1,27 +1,26 @@
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from Framework_2.pages.home.login_page import LoginPage
 import unittest
+import pytest
 
-driver = webdriver.Firefox(executable_path="C:/Users/mlively/PycharmProjects/AutomationFrameWorks/Framework_2/drivers/geckodriver.exe")
-
-
+@pytest.mark.usefixtures("oneTimeSetUp", "setUp")
 class LoginTests(unittest.TestCase):
 
+    @pytest.fixture(autouse=True)
+    def classSetup(self, oneTimeSetUp):
+        self.lp = LoginPage(self.driver)
+
+    @pytest.mark.run(order=2)
     def test_validLogin(self):
-        baseURL="https://letskodeit.teachable.com"
-        driver = webdriver.Firefox()
-        driver.maximize_window()
-        driver.implicitly_wait(5)
-        driver.get(baseURL)
+        self.lp.login("text@email.com", "abcabc")
+        result = self.lp.verifyLoginSuccessful()
+        assert result == True
 
-        lp=LoginPage(driver)
-        lp.login("test@email.com", "abcabc")
 
-        userIcon = driver.find_element(By.XPATH, ".//*[@id='navbar']//span[text()='Test User']")
+    @pytest.mark.run(order=1)
+    def test_invalidLogin(self):
+        self.lp.login("test@email.com", "abcabcabcasdf")
+        result = self.lp.verifyLoginFailed()
+        assert result == True
 
-        if userIcon is not None:
-            print("Login Successful")
-        else:
-            print("Login Failed")
 

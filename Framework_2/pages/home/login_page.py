@@ -1,9 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from Framework_2.base.selenium_driver import SeleniumDriver
-
+import Framework_2.utilities.custom_logger as cl
+import inspect
+import logging
 
 class LoginPage(SeleniumDriver):
+    log = cl.customLogger(logging.DEBUG)
 
     def __test__(self, driver):
         super().__init__(self, driver)
@@ -15,19 +18,6 @@ class LoginPage(SeleniumDriver):
     _password_field = "user_password"
     _login_button = "commit"
 
-
-    # def getLoginLink(self):
-    #     return self.driver.find_element(By.LINK_TEXT, self._login_link)
-    #
-    # def getEmailField(self):
-    #     return self.driver.find_element(By.ID, self._email_field)
-    #
-    # def getPasswordField(self):
-    #     return self.driver.find_element(By.ID, self._password_field)
-    #
-    # def getLoginButton(self):
-    #     return self.driver.find_element(By.NAME, self._login_button)
-    #
 
     def clickLoginLink(self):
         self.elementClick(self._login_link, locatorType="link")
@@ -42,11 +32,19 @@ class LoginPage(SeleniumDriver):
         self.elementClick(self._login_button, locatorType="name")
 
 
-    def login(self, email, password):
+    def login(self, email="", password=""):
         self.clickLoginLink()
         self.enterEmail(email)
         self.enterPassword(password)
         self.clickLoginButton()
 
+
+    def verifyLoginSuccessful(self):
+        result = self.isElementPresent(".//*[@id='navbar']//span[text()='User Settings']", locatorType="xpath")
+        return result
+
+    def verifyLoginFailed(self):
+        result = self.isElementPresent("//div[contains(text(), 'Invalid email or password')]", locatorType="xpath")
+        return result
 
 

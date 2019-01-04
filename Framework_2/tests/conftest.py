@@ -1,10 +1,11 @@
 import pytest
 from selenium import webdriver
+from Framework_2.base.webdriverfactory import WebDriverFactory
 
 
 @pytest.fixture(scope="class")
 def test_setup(request):
-    driver = webdriver.Firefox(executable_path="C:/Users/mlively/PycharmProjects/AutomationFrameWorks/Framework_2/drivers/geckodriver.exe")
+    driver = webdriver.Firefox()
 
 @pytest.yield_fixture()
 def setUp():
@@ -14,18 +15,11 @@ def setUp():
 
 @pytest.yield_fixture(scope="class")
 def oneTimeSetUp(request, browser):
-    if browser == "firefox":
-        baseURL = "https://letskodeit.teachable.com"
-        driver = webdriver.Firefox(executable_path="C:/Users/mlively/PycharmProjects/AutomationFrameWorks/Framework_2/drivers/geckodriver.exe")
-        driver.maximize_window()
-        driver.implicitly_wait(5)
-        driver.get(baseURL)
-        print("Running FF")
-    else:
-        baseURL = "https://letskodeit.teachable.com"
-        driver = webdriver.Chrome(executable_path="C:/Users/mlively/PycharmProjects/AutomationFrameWorks/Framework_2/drivers/chromedriver.exe")
-        driver.get(baseURL)
-        print("Running Chrome")
+    print("one time setup")
+    wdf = WebDriverFactory(browser)
+    driver = wdf.getWebDriverInstance()
+    if request.cls is not None:
+        request.cls.driver = driver
     yield driver
     driver.quit()
     print("module 1 time tearDown")

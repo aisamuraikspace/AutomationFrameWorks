@@ -13,8 +13,10 @@ class LoginTests(unittest.TestCase):
     @pytest.mark.run(order=2)
     def test_validLogin(self):
         self.lp.login("text@email.com", "abcabc")
-        result = self.lp.verifyLoginSuccessful()
-        assert result == True
+        result1 = self.lp.verifyTitle()
+        assert result1 == True
+        result2 = self.lp.verifyLoginSuccessful()
+        assert result2 == True
 
 
     @pytest.mark.run(order=1)
